@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kalender Akademik Profesional</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <style>
+        @media print {
+            .no-print { display: none !important; }
+            body { background: white; padding: 0; }
+            #capture-area { box-shadow: none; border: none; }
+        }
+        [contenteditable]:focus { outline: 2px solid #a855f7; border-radius: 4px; }
+        .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); border-top: 2px solid #581c87; }
+        .calendar-cell { border-bottom: 1px solid #e5e7eb; border-right: 1px solid #e5e7eb; }
+        #bg-wrapper { background-size: cover; background-position: center; }
+    </style>
+</head>
+<body class="bg-gray-100 p-4">
+
+    <div id="capture-area" class="max-w-4xl mx-auto shadow-2xl border border-gray-200 bg-white">
+        
+        <!-- WRAPPER UNTUK BACKGROUND (Motif Tenun) -->
+        <div id="bg-wrapper" class="p-6 space-y-6 relative">
+            
+            <!-- TOMBOL UPLOAD BACKGROUND (Hanya tampil di layar) -->
+            <div class="no-print absolute top-2 right-2">
+                <input type="file" id="bgInput" accept="image/*" class="hidden">
+                <label for="bgInput" class="cursor-pointer bg-purple-900 text-white text-[10px] px-2 py-1 rounded shadow hover:bg-purple-800">Ubah Background</label>
+            </div>
+            
+            <!-- HEADER -->
+            <div class="flex items-center justify-between border-b-4 border-purple-900 pb-4 bg-white/95 p-4 rounded-lg">
+                <div class="flex items-center gap-4">
+                    <input type="file" id="logoInput" accept="image/*" class="hidden">
+                    <label for="logoInput" id="logoPreview" class="cursor-pointer w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center overflow-hidden border border-gray-200">
+                        <span class="text-[10px] text-purple-900">LOGO</span>
+                    </label>
+                    <div>
+                        <h2 contenteditable="true" class="text-xl font-bold text-purple-900 uppercase">STIKES YAHYA BIMA</h2>
+                        <p contenteditable="true" class="text-xs text-purple-800">Sekolah Tinggi Ilmu Kesehatan</p>
+                        <p contenteditable="true" class="text-[10px] font-semibold text-purple-900">Yang Unggul, Islami, Profesional</p>
+                    </div>
+                </div>
+                <div class="text-right">
+                    <h1 contenteditable="true" class="text-4xl font-black text-purple-950 uppercase tracking-widest" id="monthTitle">FEBRUARI 2027</h1>
+                    <p contenteditable="true" class="text-xs italic text-purple-800 mt-3">"Membangun Generasi Sehat, Berilmu, dan Berakhlak Mulia"</p>
+                </div>
+            </div>
+
+            <!-- MAIN SECTION -->
+            <div class="grid grid-cols-3 gap-6 bg-white/95 p-4 rounded-lg">
+                <!-- LEFT: PHOTO -->
+                <div class="col-span-2">
+                    <input type="file" id="photoInput" accept="image/*" class="hidden">
+                    <label for="photoInput" id="photoPreview" class="cursor-pointer w-full h-[500px] bg-gray-100 flex items-center justify-center rounded-lg overflow-hidden border-2 border-purple-900">
+                        <span class="text-purple-400">Klik untuk upload foto besar</span>
+                    </label>
+                </div>
+
+                <!-- RIGHT: MATERI SECTION -->
+                <div class="col-span-1 space-y-4">
+                    <div class="bg-purple-900 text-white p-3 rounded-t-lg font-bold uppercase text-sm">KETERAMPILAN DASAR KEPERAWATAN</div>
+                    <div contenteditable="true" class="text-sm text-gray-700 space-y-2 pb-4">
+                        <p class="font-bold border-b border-purple-900 pb-3 mb-3">PEMERIKSAAN FISIK</p>
+                        <p>• Pengukuran Tanda Vital</p>
+                        <p>• Inspeksi Umum</p>
+                        <p>• Pemeriksaan Kepala dan Leher</p>
+                        <p>• Pemeriksaan Dada dan Paru</p>
+                        <p>• Pemeriksaan Jantung</p>
+                        <p>• Pemeriksaan Abdomen</p>
+                        <p>• Pemeriksaan Ekstremitas</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- KALENDER (Tanpa background motif) -->
+        <div id="calendar" class="calendar-grid bg-white">
+            <div class="text-center font-bold p-3 bg-purple-900 text-white text-xs uppercase">Sen</div>
+            <div class="text-center font-bold p-3 bg-purple-900 text-white text-xs uppercase">Sel</div>
+            <div class="text-center font-bold p-3 bg-purple-900 text-white text-xs uppercase">Rab</div>
+            <div class="text-center font-bold p-3 bg-purple-900 text-white text-xs uppercase">Kam</div>
+            <div class="text-center font-bold p-3 bg-purple-900 text-white text-xs uppercase">Jum</div>
+            <div class="text-center font-bold p-3 bg-purple-900 text-white text-xs uppercase">Sab</div>
+            <div class="text-center font-bold p-3 bg-purple-900 text-white text-xs uppercase">Min</div>
+        </div>
+
+        <!-- FOOTER -->
+        <div class="bg-purple-900 text-white p-5 flex justify-between items-center text-sm font-bold">
+            <div contenteditable="true" class="border border-transparent hover:border-white px-2 py-1 rounded transition-all">🌐 stikesyahyabima.ac.id</div>
+            <div contenteditable="true" class="border border-transparent hover:border-white px-2 py-1 rounded transition-all">📸 @stikesyahyabima</div>
+            <div contenteditable="true" class="border border-transparent hover:border-white px-2 py-1 rounded transition-all"># Unggul, Islami, Profesional</div>
+        </div>
+    </div>
+
+    <div class="no-print mt-6 max-w-4xl mx-auto flex gap-4 justify-center pb-10">
+        <input type="month" id="monthPicker" class="p-2 border rounded">
+        <button onclick="window.print()" class="bg-gray-600 text-white px-6 py-2 rounded font-bold hover:bg-gray-800">CETAK PDF</button>
+        <button onclick="downloadAsImage()" class="bg-purple-700 text-white px-6 py-2 rounded font-bold hover:bg-purple-900">DOWNLOAD GAMBAR</button>
+    </div>
+
+    <script>
+        const calendarEl = document.getElementById('calendar');
+        const monthPicker = document.getElementById('monthPicker');
+        const monthTitle = document.getElementById('monthTitle');
+        const bgWrapper = document.getElementById('bg-wrapper');
+
+        function setupPreview(inputId, previewId, isBackground = false) {
+            const input = document.getElementById(inputId);
+            input.addEventListener('change', function() {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    if (isBackground) {
+                        bgWrapper.style.backgroundImage = `url('${e.target.result}')`;
+                    } else {
+                        const preview = document.getElementById(previewId);
+                        preview.innerHTML = `<img src="${e.target.result}" class="w-full h-full object-cover">`;
+                    }
+                };
+                reader.readAsDataURL(this.files[0]);
+            });
+        }
+        
+        setupPreview('photoInput', 'photoPreview');
+        setupPreview('logoInput', 'logoPreview');
+        setupPreview('bgInput', null, true);
+
+        function generateCalendar(year, month) {
+            const monthNames = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
+            monthTitle.innerText = `${monthNames[month]} ${year}`.toUpperCase();
+
+            const dayHeaders = Array.from(calendarEl.children).slice(0, 7);
+            calendarEl.innerHTML = '';
+            dayHeaders.forEach(h => calendarEl.appendChild(h));
+
+            const firstDay = (new Date(year, month, 1).getDay() + 6) % 7; 
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+            for (let i = 0; i < firstDay; i++) {
+                const empty = document.createElement('div');
+                empty.className = 'p-6 calendar-cell';
+                calendarEl.appendChild(empty);
+            }
+
+            for (let day = 1; day <= daysInMonth; day++) {
+                const dayEl = document.createElement('div');
+                dayEl.className = 'p-4 calendar-cell text-left font-semibold text-lg hover:bg-purple-50 cursor-pointer';
+                const dayOfWeek = (firstDay + day - 1) % 7;
+                if (dayOfWeek === 6) dayEl.classList.add('text-red-600');
+                dayEl.innerHTML = `${day}`;
+                calendarEl.appendChild(dayEl);
+            }
+        }
+
+        function downloadAsImage() {
+            html2canvas(document.getElementById('capture-area'), { 
+                scale: 2,
+                useCORS: true,
+                allowTaint: true
+            }).then(canvas => {
+                const link = document.createElement('a');
+                link.download = 'Kalender_Akademik.png';
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+            });
+        }
+
+        const now = new Date();
+        monthPicker.value = `${now.getFullYear()}-${(now.getMonth() + 1).toString().padStart(2, '0')}`;
+        monthPicker.addEventListener('change', (e) => {
+            const [y, m] = e.target.value.split('-').map(Number);
+            generateCalendar(y, m - 1);
+        });
+        generateCalendar(now.getFullYear(), now.getMonth());
+    </script>
+</body>
+</html>
