@@ -15,28 +15,26 @@
         [contenteditable]:focus { outline: 2px solid #a855f7; border-radius: 4px; }
         .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); border-top: 2px solid #581c87; }
         .calendar-cell { border-bottom: 1px solid #e5e7eb; border-right: 1px solid #e5e7eb; }
-        #bg-wrapper { background-size: cover; background-position: center; }
+        /* Menggunakan background-size cover untuk menjaga proporsi gambar */
+        .preview-box { background-size: cover; background-position: center; background-repeat: no-repeat; }
     </style>
 </head>
 <body class="bg-gray-100 p-4">
 
     <div id="capture-area" class="max-w-4xl mx-auto shadow-2xl border border-gray-200 bg-white">
         
-        <!-- WRAPPER UNTUK BACKGROUND (Motif Tenun) -->
-        <div id="bg-wrapper" class="p-6 space-y-6 relative">
+        <div id="bg-wrapper" class="p-6 space-y-6 relative preview-box">
             
-            <!-- TOMBOL UPLOAD BACKGROUND (Hanya tampil di layar) -->
             <div class="no-print absolute top-2 right-2">
                 <input type="file" id="bgInput" accept="image/*" class="hidden">
-                <label for="bgInput" class="cursor-pointer bg-purple-900 text-white text-[10px] px-2 py-1 rounded shadow hover:bg-purple-800">Ubah Background</label>
+                <label for="bgInput" class="cursor-pointer bg-purple-900 text-white text-[10px] px-2 py-1 rounded shadow hover:bg-purple-800">Background</label>
             </div>
             
-            <!-- HEADER -->
             <div class="flex items-center justify-between border-b-4 border-purple-900 pb-4 bg-white/95 p-4 rounded-lg">
                 <div class="flex items-center gap-4">
                     <input type="file" id="logoInput" accept="image/*" class="hidden">
-                    <label for="logoInput" id="logoPreview" class="cursor-pointer w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center overflow-hidden border border-gray-200">
-                        <span class="text-[10px] text-purple-900">LOGO</span>
+                    <label for="logoInput" id="logoPreview" class="cursor-pointer w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center overflow-hidden border border-gray-200 preview-box">
+                        <span class="text-[10px] text-purple-900 text-center">LOGO</span>
                     </label>
                     <div>
                         <h2 contenteditable="true" class="text-xl font-bold text-purple-900 uppercase">STIKES YAHYA BIMA</h2>
@@ -50,17 +48,14 @@
                 </div>
             </div>
 
-            <!-- MAIN SECTION -->
             <div class="grid grid-cols-3 gap-6 bg-white/95 p-4 rounded-lg">
-                <!-- LEFT: PHOTO -->
                 <div class="col-span-2">
                     <input type="file" id="photoInput" accept="image/*" class="hidden">
-                    <label for="photoInput" id="photoPreview" class="cursor-pointer w-full h-[500px] bg-gray-100 flex items-center justify-center rounded-lg overflow-hidden border-2 border-purple-900">
+                    <label for="photoInput" id="photoPreview" class="cursor-pointer w-full h-[500px] bg-gray-100 flex items-center justify-center rounded-lg border-2 border-purple-900 preview-box">
                         <span class="text-purple-400">Klik untuk upload foto besar</span>
                     </label>
                 </div>
 
-                <!-- RIGHT: MATERI SECTION -->
                 <div class="col-span-1 space-y-4">
                     <div class="bg-purple-900 text-white p-3 rounded-t-lg font-bold uppercase text-sm">KETERAMPILAN DASAR KEPERAWATAN</div>
                     <div contenteditable="true" class="text-sm text-gray-700 space-y-2 pb-4">
@@ -77,7 +72,6 @@
             </div>
         </div>
 
-        <!-- KALENDER (Tanpa background motif) -->
         <div id="calendar" class="calendar-grid bg-white">
             <div class="text-center font-bold p-3 bg-purple-900 text-white text-xs uppercase">Sen</div>
             <div class="text-center font-bold p-3 bg-purple-900 text-white text-xs uppercase">Sel</div>
@@ -88,7 +82,6 @@
             <div class="text-center font-bold p-3 bg-purple-900 text-white text-xs uppercase">Min</div>
         </div>
 
-        <!-- FOOTER -->
         <div class="bg-purple-900 text-white p-5 flex justify-between items-center text-sm font-bold">
             <div contenteditable="true" class="border border-transparent hover:border-white px-2 py-1 rounded transition-all">🌐 stikesyahyabima.ac.id</div>
             <div contenteditable="true" class="border border-transparent hover:border-white px-2 py-1 rounded transition-all">📸 @stikesyahyabima</div>
@@ -108,17 +101,17 @@
         const monthTitle = document.getElementById('monthTitle');
         const bgWrapper = document.getElementById('bg-wrapper');
 
+        // Fungsi yang diperbaiki menggunakan background-image agar stabil saat dirender canvas
         function setupPreview(inputId, previewId, isBackground = false) {
             const input = document.getElementById(inputId);
             input.addEventListener('change', function() {
                 const reader = new FileReader();
                 reader.onload = (e) => {
-                    if (isBackground) {
-                        bgWrapper.style.backgroundImage = `url('${e.target.result}')`;
-                    } else {
-                        const preview = document.getElementById(previewId);
-                        preview.innerHTML = `<img src="${e.target.result}" class="w-full h-full object-cover">`;
-                    }
+                    const targetEl = isBackground ? bgWrapper : document.getElementById(previewId);
+                    targetEl.style.backgroundImage = `url('${e.target.result}')`;
+                    // Menghilangkan placeholder teks jika ada
+                    const span = targetEl.querySelector('span');
+                    if(span) span.style.display = 'none';
                 };
                 reader.readAsDataURL(this.files[0]);
             });
@@ -156,10 +149,13 @@
         }
 
         function downloadAsImage() {
+            // Skala 2 untuk kualitas lebih baik
             html2canvas(document.getElementById('capture-area'), { 
                 scale: 2,
                 useCORS: true,
-                allowTaint: true
+                allowTaint: true,
+                logging: false,
+                backgroundColor: "#ffffff"
             }).then(canvas => {
                 const link = document.createElement('a');
                 link.download = 'Kalender_Akademik.png';
